@@ -7,6 +7,7 @@ import (
 	"github.com/influxdata/telegraf"
 	"github.com/influxdata/telegraf/plugins/parsers/collectd"
 	"github.com/influxdata/telegraf/plugins/parsers/csv"
+	"github.com/influxdata/telegraf/plugins/parsers/avro"
 	"github.com/influxdata/telegraf/plugins/parsers/dropwizard"
 	"github.com/influxdata/telegraf/plugins/parsers/form_urlencoded"
 	"github.com/influxdata/telegraf/plugins/parsers/graphite"
@@ -219,6 +220,8 @@ func NewParser(config *Config) (Parser, error) {
 			config.CSVTimestampColumn,
 			config.CSVTimestampFormat,
 			config.DefaultTags)
+	case "avro":
+		parser, err = newAvroParser(config.DefaultTags)
 	case "logfmt":
 		parser, err = NewLogFmtParser(config.MetricName, config.DefaultTags)
 	case "form_urlencoded":
@@ -231,6 +234,16 @@ func NewParser(config *Config) (Parser, error) {
 		err = fmt.Errorf("Invalid data format: %s", config.DataFormat)
 	}
 	return parser, err
+}
+
+func newAvroParser(defaultTags map[string]string) (Parser, error) {
+
+	parser := &avro.Parser{
+		DefaultTags:       defaultTags,
+		TimeFunc:          time.Now,
+	}
+
+	return parser, nil
 }
 
 func newCSVParser(metricName string,
