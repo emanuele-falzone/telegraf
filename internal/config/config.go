@@ -1796,6 +1796,47 @@ func getParserConfig(name string, tbl *ast.Table) (*parsers.Config, error) {
 		}
 	}
 
+	// avro data format
+	if node, ok := tbl.Fields["avro_measurement"]; ok {
+		if kv, ok := node.(*ast.KeyValue); ok {
+			if str, ok := kv.Value.(*ast.String); ok {
+				c.AVROMeasurement = str.Value
+			}
+		}
+	}
+
+	if node, ok := tbl.Fields["avro_tags"]; ok {
+		if kv, ok := node.(*ast.KeyValue); ok {
+			if ary, ok := kv.Value.(*ast.Array); ok {
+				for _, elem := range ary.Value {
+					if str, ok := elem.(*ast.String); ok {
+						c.AVROTags = append(c.AVROTags, str.Value)
+					}
+				}
+			}
+		}
+	}
+
+	if node, ok := tbl.Fields["avro_fields"]; ok {
+		if kv, ok := node.(*ast.KeyValue); ok {
+			if ary, ok := kv.Value.(*ast.Array); ok {
+				for _, elem := range ary.Value {
+					if str, ok := elem.(*ast.String); ok {
+						c.AVROFields = append(c.AVROFields, str.Value)
+					}
+				}
+			}
+		}
+	}
+
+	if node, ok := tbl.Fields["avro_timestamp"]; ok {
+		if kv, ok := node.(*ast.KeyValue); ok {
+			if str, ok := kv.Value.(*ast.String); ok {
+				c.AVROTimestamp = str.Value
+			}
+		}
+	}
+
 	c.MetricName = name
 
 	delete(tbl.Fields, "data_format")
@@ -1838,6 +1879,10 @@ func getParserConfig(name string, tbl *ast.Table) (*parsers.Config, error) {
 	delete(tbl.Fields, "csv_timestamp_format")
 	delete(tbl.Fields, "csv_trim_space")
 	delete(tbl.Fields, "form_urlencoded_tag_keys")
+	delete(tbl.Fields, "avro_measurement")
+	delete(tbl.Fields, "avro_tags")
+	delete(tbl.Fields, "avro_fields")
+	delete(tbl.Fields, "avro_timestamp")
 
 	return c, nil
 }

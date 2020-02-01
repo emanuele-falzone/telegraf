@@ -147,6 +147,12 @@ type Config struct {
 	CSVTimestampFormat   string   `toml:"csv_timestamp_format"`
 	CSVTrimSpace         bool     `toml:"csv_trim_space"`
 
+	// avro configuration
+	AVROMeasurement	     string   `toml:"arvo_measurement"`
+	AVROTags			 []string `toml:"arvo_tags"`
+	AVROFields			 []string `toml:"arvo_fields"`
+	AVROTimestamp		 string   `toml:"arvo_timestamp"`
+
 	// FormData configuration
 	FormUrlencodedTagKeys []string `toml:"form_urlencoded_tag_keys"`
 }
@@ -221,7 +227,11 @@ func NewParser(config *Config) (Parser, error) {
 			config.CSVTimestampFormat,
 			config.DefaultTags)
 	case "avro":
-		parser, err = newAvroParser(config.DefaultTags)
+		parser, err = newAvroParser(config.AVROMeasurement,
+			config.AVROTags,
+			config.AVROFields,
+			config.AVROTimestamp,
+			config.DefaultTags)
 	case "logfmt":
 		parser, err = NewLogFmtParser(config.MetricName, config.DefaultTags)
 	case "form_urlencoded":
@@ -236,9 +246,18 @@ func NewParser(config *Config) (Parser, error) {
 	return parser, err
 }
 
-func newAvroParser(defaultTags map[string]string) (Parser, error) {
+func newAvroParser(
+	measurement string,
+	tags []string,
+	fields []string,
+	timestamp string,
+	defaultTags map[string]string) (Parser, error) {
 
 	parser := &avro.Parser{
+		Measurement:	   measurement,
+		Tags:			   tags,
+		Fields:			   fields,
+		Timestamp:		   timestamp,	
 		DefaultTags:       defaultTags,
 		TimeFunc:          time.Now,
 	}
