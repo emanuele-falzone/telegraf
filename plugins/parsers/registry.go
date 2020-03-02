@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/influxdata/telegraf"
+	"github.com/influxdata/telegraf/plugins/parsers/avro"
 	"github.com/influxdata/telegraf/plugins/parsers/collectd"
 	"github.com/influxdata/telegraf/plugins/parsers/csv"
-	"github.com/influxdata/telegraf/plugins/parsers/avro"
 	"github.com/influxdata/telegraf/plugins/parsers/dropwizard"
 	"github.com/influxdata/telegraf/plugins/parsers/form_urlencoded"
 	"github.com/influxdata/telegraf/plugins/parsers/graphite"
@@ -148,12 +148,12 @@ type Config struct {
 	CSVTrimSpace         bool     `toml:"csv_trim_space"`
 
 	// avro configuration
-	AVROSchemaRegistry   string   `toml:"arvo_schema_registry"`
-	AVROMeasurement	     string   `toml:"arvo_measurement"`
-	AVROTags			 []string `toml:"arvo_tags"`
-	AVROFields			 []string `toml:"arvo_fields"`
-	AVROTimestamp		 string   `toml:"arvo_timestamp"`
-	AVROTimestampFormat  string   `toml:"arvo_timestamp_format"`
+	AVROSchemaRegistry  string   `toml:"arvo_schema_registry"`
+	AVROMeasurement     string   `toml:"arvo_measurement"`
+	AVROTags            []string `toml:"arvo_tags"`
+	AVROFields          []string `toml:"arvo_fields"`
+	AVROTimestamp       string   `toml:"arvo_timestamp"`
+	AVROTimestampFormat string   `toml:"arvo_timestamp_format"`
 
 	// FormData configuration
 	FormUrlencodedTagKeys []string `toml:"form_urlencoded_tag_keys"`
@@ -260,14 +260,14 @@ func newAvroParser(
 	defaultTags map[string]string) (Parser, error) {
 
 	parser := &avro.Parser{
-		SchemaRegistry:    schemaRegistry,
-		Measurement:	   measurement,
-		Tags:			   tags,
-		Fields:			   fields,
-		Timestamp:		   timestamp,	
-		TimestampFormat:   timestampFormat,	
-		DefaultTags:       defaultTags,
-		TimeFunc:          time.Now,
+		SchemaRegistry:  schemaRegistry,
+		Measurement:     measurement,
+		Tags:            tags,
+		Fields:          fields,
+		Timestamp:       timestamp,
+		TimestampFormat: timestampFormat,
+		DefaultTags:     defaultTags,
+		TimeFunc:        time.Now,
 	}
 
 	return parser, nil
