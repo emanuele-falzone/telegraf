@@ -49,7 +49,7 @@ install: telegraf
 
 .PHONY: test
 test:
-	go test -short ./...
+	go test -timeout 30m -short ./...
 
 .PHONY: fmt
 fmt:
